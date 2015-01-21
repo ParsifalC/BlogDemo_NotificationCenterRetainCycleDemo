@@ -9,7 +9,7 @@
 #import "MyObject.h"
 
 @interface MyObject ()
-@property (strong, nonatomic) NSNotificationCenter *localCenter;
+@property (strong, nonatomic) id localObserver;
 @end
 
 @implementation MyObject
@@ -28,7 +28,7 @@
         
         //正确的做法
         __weak typeof (self) weakSelf = self;
-     self.localCenter = [[NSNotificationCenter defaultCenter] addObserverForName:@"test" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
+     self.localObserver = [[NSNotificationCenter defaultCenter] addObserverForName:@"test" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
          __strong typeof (self) strongSelf = weakSelf;
             NSLog(@"self:%@ note:%@", strongSelf, note);
         }];
@@ -40,7 +40,7 @@
 - (void)dealloc
 {
     //在不需要观察者的时候，移除
-    [[NSNotificationCenter defaultCenter] removeObserver:self.localCenter];
+    [[NSNotificationCenter defaultCenter] removeObserver:self.localObserver];
     NSLog(@"%s", __FUNCTION__);
 }
 @end
